@@ -1,7 +1,9 @@
 package pl.polidea.SectionList;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
@@ -11,7 +13,6 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 public class SectionListAdapter implements ListAdapter {
-
     private final DataSetObserver dataSetObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
@@ -29,38 +30,48 @@ public class SectionListAdapter implements ListAdapter {
     private final ListAdapter linkedAdapter;
     private final Map<Integer, String> sectionPositions = new LinkedHashMap<Integer, String>();
     private final Map<Integer, Integer> itemPositions = new LinkedHashMap<Integer, Integer>();
+    private final Map<String, View> currentSectionViews = new HashMap<String, View>();
+    private final Map<View, String> currentViewSections = new HashMap<View, String>();
     private int viewTypeCount;
     private final LayoutInflater inflater;
 
-    public SectionListAdapter(final LayoutInflater inflater, final ListAdapter linkedAdapter) {
+    private final View transparentSectionView;
+
+    public SectionListAdapter(final LayoutInflater inflater,
+            final ListAdapter linkedAdapter) {
         this.linkedAdapter = linkedAdapter;
         this.inflater = inflater;
         linkedAdapter.registerDataSetObserver(dataSetObserver);
         updateSessionCache();
+        transparentSectionView = createNewSectionView();
     }
 
-    private boolean isTheSame(final String previous, final String current) {
-        if (previous == null) {
-            return current == null;
+    private boolean isTheSame(final String previousSection,
+            final String newSection) {
+        if (previousSection == null) {
+            return newSection == null;
         } else {
-            return previous.equals(current);
+            return previousSection.equals(newSection);
         }
     }
 
     private synchronized void updateSessionCache() {
-        final int currentPosition = 0;
+        int currentPosition = 0;
         sectionPositions.clear();
         itemPositions.clear();
         viewTypeCount = linkedAdapter.getViewTypeCount() + 1;
-        final String currentSession = null;
+        String currentSection = null;
         final int count = linkedAdapter.getCount();
         for (int i = 0; i < count; i++) {
-            final SectionListItem item = (SectionListItem) linkedAdapter.getItem(count);
-            if (!isTheSame(currentSession, item.section)) {
+            final SectionListItem item = (SectionListItem) linkedAdapter
+                    .getItem(i);
+            if (!isTheSame(currentSection, item.section)) {
                 sectionPositions.put(currentPosition, item.section);
-            } else {
-                itemPositions.put(currentPosition, i);
+                currentSection = item.section;
+                currentPosition++;
             }
+            itemPositions.put(currentPosition, i);
+            currentPosition++;
         }
     }
 
@@ -79,8 +90,24 @@ public class SectionListAdapter implements ListAdapter {
         }
     }
 
-    private synchronized boolean isSection(final int position) {
+    public synchronized boolean isSection(final int position) {
         return sectionPositions.containsKey(position);
+    }
+
+    public synchronized String getSectionName(final int position) {
+        if (isSection(position)) {
+            return sectionPositions.get(position);
+        } else {
+            return null;
+        }
+    }
+
+    public synchronized View getSectionView(final int position) {
+        if (isSection(position)) {
+            return currentSectionViews.get(position);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -104,22 +131,47 @@ public class SectionListAdapter implements ListAdapter {
         return linkedAdapter.getItemViewType(getLinkedPosition(position));
     }
 
-    private View getSectionView(final int position, final View convertView, final ViewGroup parent, final String section) {
+    private View getSectionView(final int position, final View convertView,
+            final ViewGroup parent, final String section) {
         View theView = convertView;
-        if (theView != null) {
-            theView = inflater.inflate(R.layout.section_view, parent);
+        if (theView == null) {
+            theView = createNewSectionView();
         }
-        final TextView textView = (TextView) theView.findViewById(R.id.listTextView);
-        textView.setText(section);
+        setSectionText(section, theView);
+        replaceSectionViewsInMaps(section, theView);
         return theView;
     }
 
-    @Override
-    public View getView(final int position, final View convertView, final ViewGroup parent) {
-        if (isSection(position)) {
-            return getSectionView(position, convertView, parent, sectionPositions.get(position));
+    protected void setSectionText(final String section, final View sectionView) {
+        final TextView textView = (TextView) sectionView
+                .findViewById(R.id.listTextView);
+        textView.setText(section);
+    }
+
+    protected synchronized void replaceSectionViewsInMaps(final String section,
+            final View theView) {
+        if (currentViewSections.containsKey(theView)) {
+            final String oldSection = currentViewSections.get(theView);
+            currentViewSections.remove(theView);
+            currentSectionViews.remove(oldSection);
         }
-        return linkedAdapter.getView(getLinkedPosition(position), convertView, parent);
+        currentSectionViews.put(section, theView);
+        currentViewSections.put(theView, section);
+    }
+
+    protected View createNewSectionView() {
+        return inflater.inflate(R.layout.section_view, null);
+    }
+
+    @Override
+    public View getView(final int position, final View convertView,
+            final ViewGroup parent) {
+        if (isSection(position)) {
+            return getSectionView(position, convertView, parent,
+                    sectionPositions.get(position));
+        }
+        return linkedAdapter.getView(getLinkedPosition(position), convertView,
+                parent);
     }
 
     @Override
@@ -160,4 +212,25 @@ public class SectionListAdapter implements ListAdapter {
         return linkedAdapter.isEnabled(getLinkedPosition(position));
     }
 
+    public void makeSectionInvisibleIfFirstInList(final int firstVisibleItem) {
+        final String section = getSectionName(firstVisibleItem);
+        for (final Entry<String, View> itemView : currentSectionViews
+                .entrySet()) {
+            if (itemView.getKey().equals(section)) {
+                itemView.getValue().setVisibility(View.INVISIBLE);
+            } else {
+                itemView.getValue().setVisibility(View.VISIBLE);
+            }
+        }
+        for (final Entry<Integer, String> entry : sectionPositions.entrySet()) {
+            if (entry.getKey() > firstVisibleItem + 1) {
+                break;
+            }
+            setSectionText(entry.getValue(), transparentSectionView);
+        }
+    }
+
+    public View getTransparentSectionView() {
+        return transparentSectionView;
+    }
 }
