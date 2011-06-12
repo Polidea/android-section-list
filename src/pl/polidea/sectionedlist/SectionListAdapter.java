@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import pl.polidea.SectionList.R;
-
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +39,7 @@ public class SectionListAdapter implements ListAdapter {
     private int viewTypeCount;
     private final LayoutInflater inflater;
 
-    private final View transparentSectionView;
+    private View transparentSectionView;
 
     public SectionListAdapter(final LayoutInflater inflater,
             final ListAdapter linkedAdapter) {
@@ -48,7 +47,6 @@ public class SectionListAdapter implements ListAdapter {
         this.inflater = inflater;
         linkedAdapter.registerDataSetObserver(dataSetObserver);
         updateSessionCache();
-        transparentSectionView = createNewSectionView();
     }
 
     private boolean isTheSame(final String previousSection,
@@ -136,8 +134,7 @@ public class SectionListAdapter implements ListAdapter {
         return linkedAdapter.getItemViewType(getLinkedPosition(position));
     }
 
-    private View getSectionView(final int position, final View convertView,
-            final ViewGroup parent, final String section) {
+    private View getSectionView(final View convertView, final String section) {
         View theView = convertView;
         if (theView == null) {
             theView = createNewSectionView();
@@ -172,8 +169,7 @@ public class SectionListAdapter implements ListAdapter {
     public View getView(final int position, final View convertView,
             final ViewGroup parent) {
         if (isSection(position)) {
-            return getSectionView(position, convertView, parent,
-                    sectionPositions.get(position));
+            return getSectionView(convertView, sectionPositions.get(position));
         }
         return linkedAdapter.getView(getLinkedPosition(position), convertView,
                 parent);
@@ -231,11 +227,14 @@ public class SectionListAdapter implements ListAdapter {
             if (entry.getKey() > firstVisibleItem + 1) {
                 break;
             }
-            setSectionText(entry.getValue(), transparentSectionView);
+            setSectionText(entry.getValue(), getTransparentSectionView());
         }
     }
 
-    public View getTransparentSectionView() {
+    public synchronized View getTransparentSectionView() {
+        if (transparentSectionView == null) {
+            transparentSectionView = createNewSectionView();
+        }
         return transparentSectionView;
     }
 }
