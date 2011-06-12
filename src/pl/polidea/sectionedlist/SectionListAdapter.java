@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import pl.polidea.SectionList.R;
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;

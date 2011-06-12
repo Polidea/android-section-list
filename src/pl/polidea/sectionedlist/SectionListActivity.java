@@ -1,6 +1,5 @@
 package pl.polidea.sectionedlist;
 
-import pl.polidea.SectionList.R;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -19,15 +18,13 @@ public class SectionListActivity extends Activity {
 
         private final SectionListItem[] items;
 
-        public StandardArrayAdapter(final Context context,
-                final int textViewResourceId, final SectionListItem[] items) {
+        public StandardArrayAdapter(final Context context, final int textViewResourceId, final SectionListItem[] items) {
             super(context, textViewResourceId, items);
             this.items = items;
         }
 
         @Override
-        public View getView(final int position, final View convertView,
-                final ViewGroup parent) {
+        public View getView(final int position, final View convertView, final ViewGroup parent) {
             View view = convertView;
             if (view == null) {
                 final LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -35,8 +32,7 @@ public class SectionListActivity extends Activity {
             }
             final SectionListItem currentItem = items[position];
             if (currentItem != null) {
-                final TextView textView = (TextView) view
-                        .findViewById(R.id.example_text_view);
+                final TextView textView = (TextView) view.findViewById(R.id.example_text_view);
                 if (textView != null) {
                     textView.setText(currentItem.item.toString());
                 }
@@ -82,10 +78,8 @@ public class SectionListActivity extends Activity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        arrayAdapter = new StandardArrayAdapter(this, R.id.example_text_view,
-                exampleArray);
-        sectionAdapter = new SectionListAdapter(getLayoutInflater(),
-                arrayAdapter);
+        arrayAdapter = new StandardArrayAdapter(this, R.id.example_text_view, exampleArray);
+        sectionAdapter = new SectionListAdapter(getLayoutInflater(), arrayAdapter);
         final SectionListView listView = (SectionListView) findViewById(R.id.section_list_view);
         listView.setAdapter(sectionAdapter);
     }
