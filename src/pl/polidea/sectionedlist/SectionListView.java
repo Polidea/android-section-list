@@ -1,4 +1,4 @@
-package pl.polidea.SectionList;
+package pl.polidea.sectionedlist;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -10,6 +10,9 @@ import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+/**
+ * View displaying the list with sectioned header.
+ */
 public class SectionListView extends ListView implements OnScrollListener {
 
     private View transparentView;
@@ -30,7 +33,7 @@ public class SectionListView extends ListView implements OnScrollListener {
         commonInitialisation();
     }
 
-    protected void commonInitialisation() {
+    protected final void commonInitialisation() {
         setOnScrollListener(this);
         setVerticalFadingEdgeEnabled(false);
         setFadingEdgeLength(0);

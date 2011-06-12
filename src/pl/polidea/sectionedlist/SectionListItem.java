@@ -1,5 +1,8 @@
-package pl.polidea.SectionList;
+package pl.polidea.sectionedlist;
 
+/**
+ * Item definition including the section.
+ */
 public class SectionListItem {
     public Object item;
     public String section;

@@ -1,5 +1,6 @@
-package pl.polidea.SectionList;
+package pl.polidea.sectionedlist;
 
+import pl.polidea.SectionList.R;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+/**
+ * Example activity.
+ */
 public class SectionListActivity extends Activity {
 
     private class StandardArrayAdapter extends ArrayAdapter<SectionListItem> {
@@ -41,7 +45,7 @@ public class SectionListActivity extends Activity {
         }
     }
 
-    SectionListItem exampleArray[] = { // Comment to prevent re-format
+    SectionListItem[] exampleArray = { // Comment to prevent re-format
     new SectionListItem("Test 1 - A", "A"), //
             new SectionListItem("Test 2 - A", "A"), //
             new SectionListItem("Test 3 - A", "A"), //

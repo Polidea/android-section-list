@@ -1,9 +1,11 @@
-package pl.polidea.SectionList;
+package pl.polidea.sectionedlist;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import pl.polidea.SectionList.R;
 
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
@@ -12,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+/**
+ * Adapter for sections.
+ */
 public class SectionListAdapter implements ListAdapter {
     private final DataSetObserver dataSetObserver = new DataSetObserver() {
         @Override
