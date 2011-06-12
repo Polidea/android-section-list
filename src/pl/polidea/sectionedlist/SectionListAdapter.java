@@ -9,13 +9,15 @@ import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 /**
  * Adapter for sections.
  */
-public class SectionListAdapter implements ListAdapter {
+public class SectionListAdapter implements ListAdapter, OnItemClickListener {
     private final DataSetObserver dataSetObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
@@ -33,12 +35,13 @@ public class SectionListAdapter implements ListAdapter {
     private final ListAdapter linkedAdapter;
     private final Map<Integer, String> sectionPositions = new LinkedHashMap<Integer, String>();
     private final Map<Integer, Integer> itemPositions = new LinkedHashMap<Integer, Integer>();
-    private final Map<String, View> currentSectionViews = new HashMap<String, View>();
     private final Map<View, String> currentViewSections = new HashMap<View, String>();
     private int viewTypeCount;
-    private final LayoutInflater inflater;
+    protected final LayoutInflater inflater;
 
     private View transparentSectionView;
+
+    private OnItemClickListener linkedListener;
 
     public SectionListAdapter(final LayoutInflater inflater,
             final ListAdapter linkedAdapter) {
@@ -144,11 +147,8 @@ public class SectionListAdapter implements ListAdapter {
     protected synchronized void replaceSectionViewsInMaps(final String section,
             final View theView) {
         if (currentViewSections.containsKey(theView)) {
-            final String oldSection = currentViewSections.get(theView);
             currentViewSections.remove(theView);
-            currentSectionViews.remove(oldSection);
         }
-        currentSectionViews.put(section, theView);
         currentViewSections.put(theView, section);
     }
 
@@ -206,12 +206,17 @@ public class SectionListAdapter implements ListAdapter {
 
     public void makeSectionInvisibleIfFirstInList(final int firstVisibleItem) {
         final String section = getSectionName(firstVisibleItem);
-        for (final Entry<String, View> itemView : currentSectionViews
+        // only make invisible the first section with that name in case there
+        // are more with the same name
+        boolean alreadySetFirstSectionIvisible = false;
+        for (final Entry<View, String> itemView : currentViewSections
                 .entrySet()) {
-            if (itemView.getKey().equals(section)) {
-                itemView.getValue().setVisibility(View.INVISIBLE);
+            if (itemView.getValue().equals(section)
+                    && !alreadySetFirstSectionIvisible) {
+                itemView.getKey().setVisibility(View.INVISIBLE);
+                alreadySetFirstSectionIvisible = true;
             } else {
-                itemView.getValue().setVisibility(View.VISIBLE);
+                itemView.getKey().setVisibility(View.VISIBLE);
             }
         }
         for (final Entry<Integer, String> entry : sectionPositions.entrySet()) {
@@ -227,5 +232,24 @@ public class SectionListAdapter implements ListAdapter {
             transparentSectionView = createNewSectionView();
         }
         return transparentSectionView;
+    }
+
+    protected void sectionClicked(final String section) {
+        // do nothing
+    }
+
+    @Override
+    public void onItemClick(final AdapterView< ? > parent, final View view,
+            final int position, final long id) {
+        if (isSection(position)) {
+            sectionClicked(getSectionName(position));
+        } else if (linkedListener != null) {
+            linkedListener.onItemClick(parent, view,
+                    getLinkedPosition(position), id);
+        }
+    }
+
+    public void setOnItemClickListener(final OnItemClickListener linkedListener) {
+        this.linkedListener = linkedListener;
     }
 }
