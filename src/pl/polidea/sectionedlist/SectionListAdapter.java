@@ -105,14 +105,6 @@ public class SectionListAdapter implements ListAdapter {
         }
     }
 
-    public synchronized View getSectionView(final int position) {
-        if (isSection(position)) {
-            return currentSectionViews.get(position);
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public long getItemId(final int position) {
         if (isSection(position)) {
@@ -197,7 +189,7 @@ public class SectionListAdapter implements ListAdapter {
 
     @Override
     public void unregisterDataSetObserver(final DataSetObserver observer) {
-        unregisterDataSetObserver(observer);
+        linkedAdapter.unregisterDataSetObserver(observer);
     }
 
     @Override
