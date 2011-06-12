@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="MenuNavigatorTheme" parent="android:Theme.NoTitleBar">
+		<item name="sectionListView.sectionTextViewPadding" >2dip</item>
+		<item name="sectionListView.sectionTextViewTextColor" >@android:color/white</item>
+		<item name="sectionListView.sectionTextViewTextSize" >18dip</item>
+
+		<item name="sectionListView.sectionItemPadding" >2dip</item>
+		<item name="sectionListView.sectionItemBackground" >#AA234523</item>
+
+		<item name="sectionListView.listTextViewPadding" >2dip</item>
+		<item name="sectionListView.listTextViewTextColor" >@android:color/black</item>
+		<item name="sectionListView.listTextViewTextSize" >22dip</item>
+
+		<item name="sectionListView.listItemPadding" >2dip</item>
+		<item name="sectionListView.listItemBackground" >@android:drawable/list_selector_background</item>
+	</style>
+</resources>

@@ -1,0 +1,3 @@
+This file is only to indicate that this release should be built using release build configuration - which is stored
+in build.properties file. If this file is not there, then default debug certificate is used (using debug target of
+android build.xml files)

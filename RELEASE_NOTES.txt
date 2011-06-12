@@ -1,0 +1,12 @@
+This file is used to auto-generate html from it. Please leave the three first lines unchanged !!!!!
+The markup follows http://txt2tags.org/markup.html
+Do not forget to add TWO empty lines after finishing the list!!! See http://txt2tags.org/tips.html#top-mistakes
+---------------------------------------------------------
+
+= Release 0.1 =
+- Some feature of release 0.1
+- Some other feature of release 0.1
+
+
+= Release 0.0 =
+- initial release
