@@ -80,7 +80,8 @@ public class SectionListActivity extends Activity {
         setContentView(R.layout.main);
         arrayAdapter = new StandardArrayAdapter(this, R.id.example_text_view, exampleArray);
         sectionAdapter = new SectionListAdapter(getLayoutInflater(), arrayAdapter);
-        final SectionListView listView = (SectionListView) findViewById(R.id.section_list_view);
+        final SectionListView listView = (SectionListView) findViewById(getResources().getIdentifier(
+                "section_list_view", "id", this.getClass().getPackage().getName()));
         listView.setAdapter(sectionAdapter);
     }
 }
