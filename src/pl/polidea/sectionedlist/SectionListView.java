@@ -48,13 +48,16 @@ public class SectionListView extends ListView implements OnScrollListener {
                             + adapter.getClass());
         }
         super.setAdapter(adapter);
-        transparentView = ((SectionListAdapter) adapter)
-                .getTransparentSectionView();
         final ViewParent parent = getParent();
         if (!(parent instanceof FrameLayout)) {
             throw new IllegalStateException(
                     "Section List should have FrameLayout as parent!");
         }
+        if (transparentView != null) {
+            ((FrameLayout) parent).removeView(transparentView);
+        }
+        transparentView = ((SectionListAdapter) adapter)
+                .getTransparentSectionView();
         final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
                 LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
         ((FrameLayout) parent).addView(transparentView, lp);
