@@ -178,7 +178,7 @@ public class SectionListAdapter implements ListAdapter, OnItemClickListener {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return linkedAdapter.isEmpty();
     }
 
     @Override

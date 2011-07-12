@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,13 +21,15 @@ public class SectionListActivity extends Activity {
 
         private final SectionListItem[] items;
 
-        public StandardArrayAdapter(final Context context, final int textViewResourceId, final SectionListItem[] items) {
+        public StandardArrayAdapter(final Context context,
+                final int textViewResourceId, final SectionListItem[] items) {
             super(context, textViewResourceId, items);
             this.items = items;
         }
 
         @Override
-        public View getView(final int position, final View convertView, final ViewGroup parent) {
+        public View getView(final int position, final View convertView,
+                final ViewGroup parent) {
             View view = convertView;
             if (view == null) {
                 final LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -32,7 +37,8 @@ public class SectionListActivity extends Activity {
             }
             final SectionListItem currentItem = items[position];
             if (currentItem != null) {
-                final TextView textView = (TextView) view.findViewById(R.id.example_text_view);
+                final TextView textView = (TextView) view
+                        .findViewById(R.id.example_text_view);
                 if (textView != null) {
                     textView.setText(currentItem.item.toString());
                 }
@@ -74,14 +80,48 @@ public class SectionListActivity extends Activity {
 
     private SectionListAdapter sectionAdapter;
 
+    private SectionListView listView;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        arrayAdapter = new StandardArrayAdapter(this, R.id.example_text_view, exampleArray);
-        sectionAdapter = new SectionListAdapter(getLayoutInflater(), arrayAdapter);
-        final SectionListView listView = (SectionListView) findViewById(getResources().getIdentifier(
-                "section_list_view", "id", this.getClass().getPackage().getName()));
+        arrayAdapter = new StandardArrayAdapter(this, R.id.example_text_view,
+                exampleArray);
+        sectionAdapter = new SectionListAdapter(getLayoutInflater(),
+                arrayAdapter);
+        listView = (SectionListView) findViewById(getResources().getIdentifier(
+                "section_list_view", "id",
+                this.getClass().getPackage().getName()));
         listView.setAdapter(sectionAdapter);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.test_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.standard_list:
+            arrayAdapter = new StandardArrayAdapter(this,
+                    R.id.example_text_view, exampleArray);
+            sectionAdapter = new SectionListAdapter(getLayoutInflater(),
+                    arrayAdapter);
+            listView.setAdapter(sectionAdapter);
+            return true;
+        case R.id.empty_list:
+            arrayAdapter = new StandardArrayAdapter(this,
+                    R.id.example_text_view, new SectionListItem[] {});
+            sectionAdapter = new SectionListAdapter(getLayoutInflater(),
+                    arrayAdapter);
+            listView.setAdapter(sectionAdapter);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
