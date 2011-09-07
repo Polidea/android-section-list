@@ -11,13 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 /**
  * Adapter for sections.
  */
-public class SectionListAdapter implements ListAdapter, OnItemClickListener {
+public class SectionListAdapter extends BaseAdapter implements ListAdapter,
+        OnItemClickListener {
     private final DataSetObserver dataSetObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
