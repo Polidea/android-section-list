@@ -1,3 +1,9 @@
+---
+
+__This repository is no longer maintained. Issue reports and pull requests will not be attended.__
+
+---
+
 # Overview
 This project provides listview implementation - divided in sections. The header of top section is sticky at the top of the list. It is similar to sectioned list from iOS. You Should checkout the project from mercurial repository and use it as external android library project. You need to understand how library projects are used - it is described in android's documentation here: http://developer.android.com/guide/developing/projects/projects-eclipse.html. 
 For usage see below.
